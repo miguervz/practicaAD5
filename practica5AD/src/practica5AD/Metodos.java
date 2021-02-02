@@ -2,8 +2,7 @@ package practica5AD;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import java.util.Scanner;
-
+import java.util.Arrays;
 import org.bson.Document;
 
 import com.mongodb.client.FindIterable;
@@ -11,10 +10,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.DeleteOptions;
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
-
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
@@ -25,16 +20,28 @@ public static 	MongoCollection<Document> harrypotter = database.getCollection("h
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		eliminarDocumentos();
+		
 	}
 public static  void insertarDocumentos(){
 	
-	Document documento = new Document("name", "Manolo").append("species", "human").append("gender", "male").append("house", "Gryffindor").append("dateOfBirth", "25-5-1997").append("yearOfBirth", 1997).append("ancestry", "").append("eyeColour", "brown").append("patronus", "camel").append("hogwartsStudent", true).append("hogwartsStaff", false).append("actor", "Miguel Ramírez").append("alive", true);
 
+	/* Añadimos varios documentos */
+	harrypotter.insertMany(Arrays.asList(
+			Document.parse("{name: 'Juana',species: 'Human',"
+					+ "gender: 'female',house: 'Gryffindor',dateOfBirth: '01-10-1994',yearOfBirth:'1994',ancestry:'',"
+					+ "eyeColour:'green',patronus:'turtle',hogwartsStudent:true,hogwartsStaff:false,alive:true,"
+					+ "actor:'Isabel Gómez',wand: {wood: 'shadow',core: 'unicorn tail-hair',length:9}}"),
+			Document.parse("{name: 'Julio',species: 'Human',gender: 'male',house: 'Slytherin',dateOfBirth: '25-1-1967',yearOfBirth:'1967',ancestry:'',"
+					+ "eyeColour:'brown',patronus:'cow',hogwartsStudent:false,hogwartsStaff:false,alive:true,"
+					+ "actor:'Nacho Vidal',wand: {wood: 'holly',core: 'unicorn horn',length:23}}")));
+	}
+public static  void insertarDocumento(){
+	
 	/* Añadimos un único documento */
-	harrypotter.insertOne(documento);
-
-		
+	harrypotter.insertOne(
+			Document.parse("{name: 'Manolo',species: 'Human',gender: 'male',house: 'Gryffindor',dateOfBirth: '25-5-1997',"
+					+ "yearOfBirth:'1997',ancestry:'',eyeColour:'brown',patronus:'camel',hogwartsStudent:true,hogwartsStaff:false,"
+					+ "alive:true,actor:'Miguel Ramírez',wand: {wood: 'holly',core: 'unicorn tail-hair',length:10}}"));
 	}
 public static  void consultarHumanos(){
 	FindIterable<Document> humanos = harrypotter.find(eq("species", "human"));
@@ -56,10 +63,9 @@ public static  void consultarEstudiantesVivos(){
 	for (Object harrypotter : estudiantesVivos) {
 		System.out.println(((Document) harrypotter).toJson());
 	}}
-
 public static  void actualizarDocumentos(){
 	try{
-	harrypotter.updateOne(eq("name", "Manolo"), combine(set("name", "Gobernador")));
+	harrypotter.updateOne(eq("name", "Manolo"), combine(set("name", "Alfredo"), set("house", "Slytherin")));
 	}
 	catch (ClassCastException e) {
 		
@@ -68,7 +74,7 @@ public static  void actualizarDocumentos(){
 	}
 public static  void eliminarDocumentos(){
 	try{
-	harrypotter.deleteOne(eq("name", "Gobernador") );
+	harrypotter.deleteOne(eq("name", "Alfredo") );
 	}
 	catch (ClassCastException e) {
 		
